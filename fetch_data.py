@@ -37,9 +37,10 @@ fred_series = {
 }
 
 # ================== Sentiment Analysis Model ==================
+# Changed to general sentiment model instead of financial-specific
 sentiment_analyzer = pipeline(
     "sentiment-analysis",
-    model="mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis"
+    model="distilbert-base-uncased-finetuned-sst-2-english"  # General sentiment model
 )
 
 # ================== Helper Functions ==================
@@ -123,14 +124,14 @@ def fetch_economic_data_fred(start_date="2010-01-01"):
 
 # ================== Fetch News Sentiment (NewsData.io) ==================
 def fetch_sentiment():
-    """ Fetch financial news sentiment from NewsData.io """
-    print("📊 Fetching financial news sentiment from NewsData.io...")
+    """ Fetch social news sentiment from NewsData.io """
+    print("📊 Fetching social news sentiment from NewsData.io...")
 
-    # ✅ Correct API Key (ensure it is inside quotes)
-    NEWS_API_KEY = "pub_69938d82a406c9353ccbc2d45c8df6168354f"  # ✅ Your provided API Key
+    # ✅ Using existing API Key
+    NEWS_API_KEY = "pub_69938d82a406c9353ccbc2d45c8df6168354f"
 
-    # ✅ Corrected API URL
-    url = f"https://newsdata.io/api/1/news?apikey={NEWS_API_KEY}&q=finance&language=en"
+    # ✅ Updated query to focus on social topics instead of finance
+    url = f"https://newsdata.io/api/1/news?apikey={NEWS_API_KEY}&q=social OR trending OR viral&language=en"
 
     try:
         response = requests.get(url)
@@ -171,15 +172,15 @@ def fetch_sentiment():
         # ✅ Save the data if results exist
         if results:
             df = pd.DataFrame(results)
-            save_to_csv(df, "sentiment_data.csv")
-            print(f"✅ Saved {len(df)} records to data/sentiment_data.csv")
+            save_to_csv(df, "social_sentiment_data.csv")  # Changed filename to reflect social focus
+            print(f"✅ Saved {len(df)} records to data/social_sentiment_data.csv")
             return df
         else:
-            print("⚠️ No news data available.")
+            print("⚠️ No social news data available.")
             return pd.DataFrame()
 
     except Exception as e:
-        print(f"⚠️ Error fetching news sentiment: {e}")
+        print(f"⚠️ Error fetching social news sentiment: {e}")
         return pd.DataFrame()
 
 # ================== Main Execution ==================
@@ -205,7 +206,7 @@ def main():
 
     # Fetch Sentiment Data
     sentiment_df = fetch_sentiment()
-    save_to_csv(sentiment_df, "sentiment_data.csv")
+    save_to_csv(sentiment_df, "social_sentiment_data.csv")  # Updated filename
 
     print("✅ All data collection complete!")
 
