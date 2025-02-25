@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velora | AI-Powered Stock Trading Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Welcome to Velora</div>
+                <div class="modal-subtitle">Secure Login with Multi-Factor Authentication</div>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <div class="mfa-section">
+                    <div class="mfa-title">Select Authentication Method</div>
+                    <div class="mfa-options">
+                        <div class="mfa-option selected" data-method="app">
+                            <i class="fas fa-mobile-alt"></i>
+                            <div>Authenticator App</div>
+                        </div>
+                        <div class="mfa-option" data-method="sms">
+                            <i class="fas fa-sms"></i>
+                            <div>SMS Code</div>
+                        </div>
+                        <div class="mfa-option" data-method="email">
+                            <i class="fas fa-envelope"></i>
+                            <div>Email Code</div>
+                        </div>
+                    </div>
+                    <div id="mfaInputSection" class="form-group">
+                        <label for="mfaCode" class="form-label">Enter 6-digit code from Authenticator App</label>
+                        <input type="text" id="mfaCode" class="form-input" placeholder="000000" maxlength="6" required>
+                    </div>
+                </div>
+                <button type="submit" class="form-button">Login Securely</button>
+                <div class="form-footer">
+                    <div>Don't have an account? <span class="form-link">Register</span></div>
+                    <div style="margin-top: 10px">Forgot password? <span class="form-link">Reset</span></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stock Selector Modal -->
+    <div id="stockSelectorModal" class="modal stock-selector-modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <div class="modal-title">Select a Stock</div>
+                <div class="modal-subtitle">Choose from the top 50 companies</div>
+            </div>
+            <div class="stock-grid" id="stockGrid">
+                <!-- Stock cards will be dynamically generated here -->
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button id="closeSelectorBtn" class="form-button" style="width: auto; padding: 8px 15px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> Velora<span>.</span>
+            </div>
+            <div class="nav-links">
+                <a href="#dashboard" class="active">Dashboard</a>
+                <a href="#explore">Explore</a>
+                <a href="#portfolio">Portfolio</a>
+                <a href="#learn">Learn</a>
+            </div>
+            <div class="user-menu">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <div class="profile-icon" id="userIcon">JD</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div class="dashboard-grid">
+            <!-- Main Column -->
+            <div class="main-column">
+                <!-- Portfolio Summary -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Portfolio Summary</div>
+                        <div class="security-badge">
+                            <i class="fas fa-shield-alt"></i> End-to-End Encrypted
+                        </div>
+                    </div>
+                    <div class="portfolio-summary">
+                        <div class="stat-card">
+                            <div class="stat-title">Total Value</div>
+                            <div class="stat-value">$24,875.63</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-arrow-up"></i> +$1,245.30 (5.27%)
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Today's Change</div>
+                            <div class="stat-value">+$354.18</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-arrow-up"></i> +1.45%
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Buying Power</div>
+                            <div class="stat-value">$5,128.90</div>
+                            <div class="stat-change">Available to trade</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Prediction Accuracy</div>
+                            <div class="stat-value">87.3%</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-arrow-up"></i> +2.1%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Analysis -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Stock Analysis & Prediction</div>
+                        <div id="stockSelector" class="card-action">Change Stock</div>
+                    </div>
+                    
+                    <div class="timeframe-selector">
+                        <div class="timeframe-option" data-days="1">1D</div>
+                        <div class="timeframe-option" data-days="3">3D</div>
+                        <div class="timeframe-option" data-days="7">1W</div>
+                        <div class="timeframe-option active" data-days="30">1M</div>
+                        <div class="timeframe-option" data-days="180">6M</div>
+                        <div class="timeframe-option" data-days="365">1Y</div>
+                        <div class="timeframe-option" data-days="max">All</div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="stockChartCanvas"></canvas>
+                        <div class="loading-overlay" id="chartLoading" style="display: none;">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-row">
+                        <div class="metric">
+                            <div class="metric-title">Current Price</div>
+                            <div class="metric-value" id="currentPrice">$187.23</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-title">Today's Change</div>
+                            <div class="metric-value price-up" id="priceChange">+$2.35 (1.2%)</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-title">Volume</div>
+                            <div class="metric-value" id="volume">48.3M</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-title">Market Cap</div>
+                            <div class="metric-value" id="marketCap">$2.94T</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">AI Price Predictions</div>
+                        <div class="recommendation buy" id="recommendation">BUY</div>
+                    </div>
+                    
+                    <div class="prediction-container" id="predictionContainer">
+                        <div class="prediction-card">
+                            <div class="prediction-day">Tomorrow</div>
+                            <div class="prediction-price" id="day1Price">$191.47</div>
+                            <div class="confidence">
+                                Confidence: <span id="day1Confidence">89%</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-level" id="day1ConfidenceBar" style="width: 89%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prediction-card">
+                            <div class="prediction-day">In 2 Days</div>
+                            <div class="prediction-price" id="day2Price">$193.28</div>
+                            <div class="confidence">
+                                Confidence: <span id="day2Confidence">84%</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-level" id="day2ConfidenceBar" style="width: 84%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prediction-card">
+                            <div class="prediction-day">In 3 Days</div>
+                            <div class="prediction-price" id="day3Price">$195.14</div>
+                            <div class="confidence">
+                                Confidence: <span id="day3Confidence">78%</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-level" id="day3ConfidenceBar" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Chatbot & Learning -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">AI Trading Assistant</div>
+                        <div class="card-action">View History</div>
+                    </div>
+                    
+                    <div class="chatbot-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message bot-message">
+                                <div class="message-content">
+                                    Welcome to Velora! How can I help with your trading decisions today?
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="quizContainer" class="quiz-container" style="display: none;">
+                            <div class="quiz-question" id="quizQuestion"></div>
+                            <div class="quiz-options" id="quizOptions">
+                            </div>
+                            <button class="quiz-submit">Submit Answer (+10 points)</button>
+                        </div>
+                        
+                        <div class="chat-input">
+                            <input type="text" placeholder="Ask about trading strategies or stock analysis...">
+                            <button>Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Account Security -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Account Security</div>
+                        <div class="card-action">Manage</div>
+                    </div>
+                    <div style="text-align: center; padding: 10px 0;">
+                        <div class="security-badge">
+                            <i class="fas fa-shield-alt"></i> MFA Enabled
+                        </div>
+                        <div class="security-badge">
+                            <i class="fas fa-lock"></i> AES-256 Encrypted
+                        </div>
+                        <div class="security-badge">
+                            <i class="fas fa-check-circle"></i> GDPR Compliant
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Watchlist -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Watchlist</div>
+                        <div class="card-action">Edit</div>
+                    </div>
+                    <ul class="stock-list">
+                        <li class="stock-item">
+                            <div class="stock-info">
+                                <div class="stock-name">AAPL</div>
+                                <div class="stock-details">Apple Inc.</div>
+                            </div>
+                            <div class="stock-price">
+                                <div class="price-value">$187.23</div>
+                                <div class="price-change price-up">+1.2%</div>
+                            </div>
+                        </li>
+                        <li class="stock-item">
+                            <div class="stock-info">
+                                <div class="stock-name">MSFT</div>
+                                <div class="stock-details">Microsoft Corp.</div>
+                            </div>
+                            <div class="stock-price">
+                                <div class="price-value">$402.56</div>
+                                <div class="price-change price-up">+0.8%</div>
+                            </div>
+                        </li>
+                        <li class="stock-item">
+                            <div class="stock-info">
+                                <div class="stock-name">GOOGL</div>
+                                <div class="stock-details">Alphabet Inc.</div>
+                            </div>
+                            <div class="stock-price">
+                                <div class="price-value">$159.78</div>
+                                <div class="price-change price-down">-0.5%</div>
+                            </div>
+                        </li>
+                        <li class="stock-item">
+                            <div class="stock-info">
+                                <div class="stock-name">AMZN</div>
+                                <div class="stock-details">Amazon.com Inc.</div>
+                            </div>
+                            <div class="stock-price">
+                                <div class="price-value">$178.95</div>
+                                <div class="price-change price-up">+1.5%</div>
+                            </div>
+                        </li>
+                        <li class="stock-item">
+                            <div class="stock-info">
+                                <div class="stock-name">TSLA</div>
+                                <div class="stock-details">Tesla Inc.</div>
+                            </div>
+                            <div class="stock-price">
+                                <div class="price-value">$218.23</div>
+                                <div class="price-change price-down">-2.1%</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Prediction Accuracy -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Prediction Metrics</div>
+                    </div>
+                    <div class="metrics-row">
+                        <div class="metric">
+                            <div class="metric-title">MSE</div>
+                            <div class="metric-value">0.023</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-title">RMSE</div>
+                            <div class="metric-value">0.152</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-title">R²</div>
+                            <div class="metric-value">0.91</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Learning Leaderboard -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Learning Leaderboard</div>
+                        <div class="card-action">View All</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank">1</div>
+                        <div class="leaderboard-user">Sarah K.</div>
+                        <div class="leaderboard-points">950 pts</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank">2</div>
+                        <div class="leaderboard-user">Michael T.</div>
+                        <div class="leaderboard-points">820 pts</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank">3</div>
+                        <div class="leaderboard-user">David W.</div>
+                        <div class="leaderboard-points">785 pts</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank">4</div>
+                        <div class="leaderboard-user">John D.</div>
+                        <div class="leaderboard-points">710 pts</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank">5</div>
+                        <div class="leaderboard-user">Emma L.</div>
+                        <div class="leaderboard-points">695 pts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
+</body>
+</html>
