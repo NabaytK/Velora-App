@@ -1,0 +1,5 @@
+2025-02-25 23:09:48,106 - INFO: Interpolating Economic Data
+2025-02-25 23:09:48,112 - INFO: Generating Historical Sentiment Data
+2025-02-25 23:09:48,179 - INFO: ✅ Successfully generated historical economic and sentiment data
+2025-02-25 23:09:48,179 - INFO: Economic Data Shape: (3810, 9)
+2025-02-25 23:09:48,179 - INFO: Sentiment Data Shape: (3810, 6)
