@@ -1,0 +1,133 @@
+2025-02-25 23:02:51,822 - INFO: Current Working Directory: /workspaces/Velora-App
+2025-02-25 23:02:51,823 - INFO: Contents of current directory:
+2025-02-25 23:02:51,823 - INFO: ['app.py', 'styles.css', 'check_dates.py', '.git', '.gitignore', 'LICENSE', 'fetch_data.py', 'requirements.txt', 'main.py', 'data', 'merge_debug.log', 'index.html', 'check_data.py', 'README.md', 'main.js', 'merge.py', 'extract_stock_data.py']
+2025-02-25 23:02:51,823 - INFO: Checking data directory: data
+2025-02-25 23:02:51,823 - INFO: Checking Stock data file: data/stock_data.csv
+2025-02-25 23:02:52,222 - INFO: Stock Data - Columns: ['Date', 'Close', 'High', 'Low', 'Open', 'Volume', 'Ticker', 'timestamp']
+2025-02-25 23:02:52,223 - INFO: Stock Data - Shape: (173785, 8)
+2025-02-25 23:02:52,273 - ERROR: Error processing Stock data: '<=' not supported between instances of 'float' and 'datetime.date'
+2025-02-25 23:02:52,293 - ERROR: Traceback (most recent call last):
+  File "/workspaces/Velora-App/merge.py", line 88, in load_and_prepare_data
+    logging.info(f"{name} Data - Timestamp range: {df['timestamp'].min()} to {df['timestamp'].max()}")
+                                                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/pandas/core/series.py", line 6507, in min
+    return NDFrame.min(self, axis, skipna, numeric_only, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/pandas/core/generic.py", line 12388, in min
+    return self._stat_function(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/pandas/core/generic.py", line 12377, in _stat_function
+    return self._reduce(
+           ^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/pandas/core/series.py", line 6457, in _reduce
+    return op(delegate, skipna=skipna, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/pandas/core/nanops.py", line 147, in f
+    result = alt(values, axis=axis, skipna=skipna, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/pandas/core/nanops.py", line 404, in new_func
+    result = func(values, axis=axis, skipna=skipna, mask=mask, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/pandas/core/nanops.py", line 1098, in reduction
+    result = getattr(values, meth)(axis)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/numpy/core/_methods.py", line 45, in _amin
+    return umr_minimum(a, axis, None, out, keepdims, initial, where)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: '<=' not supported between instances of 'float' and 'datetime.date'
+
+2025-02-25 23:02:52,294 - INFO: Checking Economic data file: data/economic_data.csv
+2025-02-25 23:02:52,314 - INFO: Economic Data - Columns: ['RealGDP', 'UnemploymentRate', 'NonfarmPayrolls', 'Inflation', 'ConsumerSentiment', 'RetailSales', 'DurableGoods', 'FedFundsRate', 'timestamp']
+2025-02-25 23:02:52,314 - INFO: Economic Data - Shape: (181, 9)
+2025-02-25 23:02:52,316 - INFO: Economic Data - Timestamp range: 2025-02-25 to 2025-02-25
+2025-02-25 23:02:52,316 - INFO: Checking Sentiment data file: data/social_sentiment_data.csv
+2025-02-25 23:02:52,319 - INFO: Sentiment Data - Columns: ['date', 'source', 'title', 'sentiment_score', 'sentiment_label', 'timestamp']
+2025-02-25 23:02:52,319 - INFO: Sentiment Data - Shape: (20, 6)
+2025-02-25 23:02:52,321 - INFO: Sentiment Data - Timestamp range: 2025-02-25 to 2025-02-25
+2025-02-25 23:02:52,321 - CRITICAL: Insufficient data for merging!
+2025-02-25 23:02:52,321 - CRITICAL: Cannot merge data due to loading issues
+2025-02-25 23:07:04,109 - DEBUG: 
+==================================================
+Debugging Stock DataFrame
+==================================================
+2025-02-25 23:07:04,111 - DEBUG: Original Date Column Type: object
+2025-02-25 23:07:04,111 - DEBUG: Sample Original Dates:
+0           NaN
+1    2010-01-04
+2    2010-01-05
+3    2010-01-06
+4    2010-01-07
+Name: Date, dtype: object
+2025-02-25 23:07:04,131 - DEBUG: Parsed Date Column Type: datetime64[ns]
+2025-02-25 23:07:04,132 - DEBUG: NaT Count: 46
+2025-02-25 23:07:04,134 - DEBUG: Date Range: 2010-01-04 00:00:00 to 2025-02-24 00:00:00
+2025-02-25 23:07:04,184 - DEBUG: Unique Merge Dates: 3809
+2025-02-25 23:07:04,184 - DEBUG: First 10 Unique Dates: [datetime.date(2010, 1, 4) datetime.date(2010, 1, 5)
+ datetime.date(2010, 1, 6) datetime.date(2010, 1, 7)
+ datetime.date(2010, 1, 8) datetime.date(2010, 1, 11)
+ datetime.date(2010, 1, 12) datetime.date(2010, 1, 13)
+ datetime.date(2010, 1, 14) datetime.date(2010, 1, 15)]
+2025-02-25 23:07:04,188 - DEBUG: 
+Stock Data Merge Dates:
+2025-02-25 23:07:04,203 - DEBUG: [datetime.date(2010, 1, 4) datetime.date(2010, 1, 5)
+ datetime.date(2010, 1, 6) ... datetime.date(2025, 2, 20)
+ datetime.date(2025, 2, 21) datetime.date(2025, 2, 24)]
+2025-02-25 23:07:04,203 - DEBUG: 
+Economic Data Merge Dates:
+2025-02-25 23:07:04,203 - DEBUG: [datetime.date(2025, 2, 25)]
+2025-02-25 23:07:04,204 - DEBUG: 
+Sentiment Data Merge Dates:
+2025-02-25 23:07:04,204 - DEBUG: [datetime.date(2025, 2, 25)]
+2025-02-25 23:07:04,222 - INFO: Merged Data Shape: (0, 27)
+2025-02-25 23:07:04,222 - INFO: Unique Merge Dates: 0
+2025-02-25 23:07:04,224 - INFO: ✅ Merged data saved to data/merged_data.csv
+2025-02-25 23:07:04,224 - INFO: Columns in merged data: ['merge_date', 'Ticker', 'Close', 'High', 'Low', 'Open', 'Volume', 'RealGDP', 'UnemploymentRate', 'NonfarmPayrolls', 'Inflation', 'ConsumerSentiment', 'RetailSales', 'DurableGoods', 'FedFundsRate', 'source', 'title', 'sentiment_score', 'sentiment_label']
+2025-02-25 23:08:43,500 - DEBUG: Processing dates for DataFrame
+2025-02-25 23:08:43,550 - DEBUG: Total rows: 173785
+2025-02-25 23:08:43,557 - DEBUG: Valid dates: 173739
+2025-02-25 23:08:43,573 - DEBUG: Date range: 2010-01-04 to 2025-02-24
+2025-02-25 23:08:43,573 - DEBUG: Unique dates count: 3809
+2025-02-25 23:08:43,573 - DEBUG: Processing dates for DataFrame
+2025-02-25 23:08:43,575 - DEBUG: Total rows: 181
+2025-02-25 23:08:43,576 - DEBUG: Valid dates: 181
+2025-02-25 23:08:43,576 - DEBUG: Date range: 2025-02-25 to 2025-02-25
+2025-02-25 23:08:43,576 - DEBUG: Unique dates count: 1
+2025-02-25 23:08:43,577 - DEBUG: Processing dates for DataFrame
+2025-02-25 23:08:43,579 - DEBUG: Total rows: 20
+2025-02-25 23:08:43,579 - DEBUG: Valid dates: 20
+2025-02-25 23:08:43,580 - DEBUG: Date range: 2025-02-25 to 2025-02-25
+2025-02-25 23:08:43,580 - DEBUG: Unique dates count: 1
+2025-02-25 23:08:43,646 - INFO: Merged Data Shape: (0, 19)
+2025-02-25 23:08:43,646 - INFO: Unique Merge Dates: 0
+2025-02-25 23:08:43,647 - INFO: ✅ Merged data saved to data/merged_data.csv
+2025-02-25 23:08:43,647 - INFO: Columns in merged data: ['merge_date', 'Ticker', 'Close', 'High', 'Low', 'Open', 'Volume', 'RealGDP', 'UnemploymentRate', 'NonfarmPayrolls', 'Inflation', 'ConsumerSentiment', 'RetailSales', 'DurableGoods', 'FedFundsRate', 'source', 'title', 'sentiment_score', 'sentiment_label']
+2025-02-25 23:12:52,129 - DEBUG: Processing dates for DataFrame
+2025-02-25 23:12:52,246 - DEBUG: Total rows: 173739
+2025-02-25 23:12:52,253 - DEBUG: Valid dates: 173739
+2025-02-25 23:12:52,269 - DEBUG: Date range: 2010-01-04 to 2025-02-24
+2025-02-25 23:12:52,269 - DEBUG: Unique dates count: 3809
+2025-02-25 23:12:52,274 - DEBUG: Processing dates for DataFrame
+2025-02-25 23:12:52,281 - DEBUG: Total rows: 3809
+2025-02-25 23:12:52,281 - DEBUG: Valid dates: 3809
+2025-02-25 23:12:52,282 - DEBUG: Date range: 2010-01-04 to 2025-02-24
+2025-02-25 23:12:52,283 - DEBUG: Unique dates count: 3809
+2025-02-25 23:12:52,283 - DEBUG: Processing dates for DataFrame
+2025-02-25 23:12:52,288 - DEBUG: Total rows: 3809
+2025-02-25 23:12:52,289 - DEBUG: Valid dates: 3809
+2025-02-25 23:12:52,290 - DEBUG: Date range: 2010-01-04 to 2025-02-24
+2025-02-25 23:12:52,290 - DEBUG: Unique dates count: 3809
+2025-02-25 23:12:52,492 - INFO: Merged Data Shape: (173739, 19)
+2025-02-25 23:12:52,498 - INFO: Unique Merge Dates: 3809
+2025-02-25 23:12:55,149 - INFO: ✅ Merged data saved to data/merged_data.csv
+2025-02-25 23:12:55,149 - INFO: Columns in merged data: ['merge_date', 'Ticker', 'Close', 'High', 'Low', 'Open', 'Volume', 'RealGDP', 'UnemploymentRate', 'NonfarmPayrolls', 'Inflation', 'ConsumerSentiment', 'RetailSales', 'DurableGoods', 'FedFundsRate', 'source', 'title', 'sentiment_score', 'sentiment_label']
+2025-02-25 23:12:55,154 - INFO: 
+📊 Merged Data Summary:
+2025-02-25 23:12:55,201 - INFO:              RealGDP  UnemploymentRate  NonfarmPayrolls      Inflation  ConsumerSentiment    RetailSales   DurableGoods   FedFundsRate  sentiment_score
+count  173739.000000     173739.000000    173739.000000  173739.000000      173739.000000  173739.000000  173739.000000  173739.000000    173739.000000
+mean    16881.229332          9.976418    132138.675147     221.403185          75.739337  352115.639266  184274.621504       0.111980         0.960290
+std      1105.630352          0.653402      8654.377414      14.500726           4.960522   23061.693576   12069.003421       0.007334         0.058121
+min     14924.439015          8.820000    116821.800117     195.739200          66.960000  311300.100310  162914.400162       0.099000         0.620139
+25%     15917.333279          9.406778    124593.730115     208.761353          71.414720  332010.298115  173752.782319       0.105586         0.931702
+50%     17096.537968         10.103661    133824.014372     224.227032          76.705341  356606.635546  186624.919381       0.113408         1.000000
+75%     17923.626391         10.592451    140298.090767     235.074584          80.416157  373858.386754  195653.373587       0.118895         1.000000
+max     18240.980428         10.780000    142782.195524     239.236793          81.839997  380477.888073  199117.593758       0.121000         1.000000

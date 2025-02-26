@@ -1,0 +1,15 @@
+2025-02-25 23:06:11,340 - INFO: Merged Data Shape: (0, 24)
+2025-02-25 23:06:11,340 - INFO: Unique Merge Dates: 0
+2025-02-25 23:06:11,343 - INFO: ✅ Merged data saved to data/merged_data.csv
+2025-02-25 23:06:11,343 - INFO: Columns in merged data: ['merge_date', 'Ticker', 'Close', 'High', 'Low', 'Open', 'Volume', 'RealGDP', 'UnemploymentRate', 'NonfarmPayrolls', 'Inflation', 'ConsumerSentiment', 'RetailSales', 'DurableGoods', 'FedFundsRate', 'source', 'title', 'sentiment_score', 'sentiment_label']
+2025-02-25 23:06:11,346 - INFO: 
+📊 Merged Data Summary:
+2025-02-25 23:06:11,377 - INFO:        Close  High  Low  Open  Volume  RealGDP  UnemploymentRate  NonfarmPayrolls  Inflation  ConsumerSentiment  RetailSales  DurableGoods  FedFundsRate  sentiment_score
+count    0.0   0.0  0.0   0.0     0.0      0.0               0.0              0.0        0.0                0.0          0.0           0.0           0.0              0.0
+mean     NaN   NaN  NaN   NaN     NaN      NaN               NaN              NaN        NaN                NaN          NaN           NaN           NaN              NaN
+std      NaN   NaN  NaN   NaN     NaN      NaN               NaN              NaN        NaN                NaN          NaN           NaN           NaN              NaN
+min      NaN   NaN  NaN   NaN     NaN      NaN               NaN              NaN        NaN                NaN          NaN           NaN           NaN              NaN
+25%      NaN   NaN  NaN   NaN     NaN      NaN               NaN              NaN        NaN                NaN          NaN           NaN           NaN              NaN
+50%      NaN   NaN  NaN   NaN     NaN      NaN               NaN              NaN        NaN                NaN          NaN           NaN           NaN              NaN
+75%      NaN   NaN  NaN   NaN     NaN      NaN               NaN              NaN        NaN                NaN          NaN           NaN           NaN              NaN
+max      NaN   NaN  NaN   NaN     NaN      NaN               NaN              NaN        NaN                NaN          NaN           NaN           NaN              NaN
