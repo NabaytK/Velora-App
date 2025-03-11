@@ -39,3 +39,54 @@ export default function PasswordResetForm() {
       </div>
       
       {error && (
+        <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md">
+          {error}
+        </div>
+      )}
+      
+      {success && (
+        <div className="p-3 text-sm text-green-500 bg-green-50 rounded-md">
+          {success}
+        </div>
+      )}
+      
+      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="you@example.com"
+          />
+        </div>
+        
+        <div>
+          <Button
+            type="submit"
+            isLoading={isLoading}
+            fullWidth
+            primary
+          >
+            Send Reset Link
+          </Button>
+        </div>
+        
+        <div className="text-center">
+          <span className="text-sm text-gray-600">
+            Remember your password?{' '}
+            <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Sign in
+            </Link>
+          </span>
+        </div>
+      </form>
+    </div>
+  );
+}
