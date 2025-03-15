@@ -1,3 +1,5 @@
+"use client"
+
 export default function FeatureImportance() {
   const features = [
     { name: 'Closing Price', importance: 35 },
@@ -25,6 +27,13 @@ export default function FeatureImportance() {
           </div>
         </div>
       ))}
+      
+      <div className="p-4 mt-2 bg-gray-50 rounded-lg text-sm text-gray-600">
+        <p>
+          These values represent the relative importance of different features in our prediction model.
+          Closing price and trading volume typically have the strongest influence on future price movements.
+        </p>
+      </div>
     </div>
   );
 }

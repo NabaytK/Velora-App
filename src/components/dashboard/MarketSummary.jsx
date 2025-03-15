@@ -1,11 +1,12 @@
+"use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function MarketSummary() {
   const [indexes, setIndexes] = useState([
-    { name: 'S&P 500', symbol: 'SPX', price: 4,982.75, change: 0.58 },
-    { name: 'NASDAQ', symbol: 'COMP', price: 17,043.81, change: 1.25 },
-    { name: 'Dow Jones', symbol: 'DJI', price: 37,863.80, change: -0.12 },
+    { name: 'S&P 500', symbol: 'SPX', price: 4982.75, change: 0.58 },
+    { name: 'NASDAQ', symbol: 'COMP', price: 17043.81, change: 1.25 },
+    { name: 'Dow Jones', symbol: 'DJI', price: 37863.80, change: -0.12 },
   ]);
 
   const [trending, setTrending] = useState([

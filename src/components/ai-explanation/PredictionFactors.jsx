@@ -1,51 +1,82 @@
-export default function PredictionFactors() {
-  const factors = [
-    { 
-      name: 'Company Earnings', 
-      description: 'Quarterly financial performance impacts stock valuation',
-      impact: 'High'
-    },
-    { 
-      name: 'Market Sentiment', 
-      description: 'Investor perception and social media trends',
-      impact: 'Medium'
-    },
-    { 
-      name: 'Economic Indicators', 
-      description: 'GDP, inflation, and employment rates',
-      impact: 'High'
-    },
-    { 
-      name: 'Technical Analysis', 
-      description: 'Historical price patterns and trading volumes',
-      impact: 'Medium'
-    }
-  ];
+'use client';
 
-  const impactColors = {
-    'High': 'bg-red-100 text-red-800',
-    'Medium': 'bg-yellow-100 text-yellow-800',
-    'Low': 'bg-green-100 text-green-800'
-  };
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+export default function PredictionChart({ symbol = 'AAPL' }) {
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Sample prediction data (replace with actual data fetching)
+  useEffect(() => {
+    const generateSampleData = () => {
+      const basePrice = Math.random() * 100 + 100; // Random base price
+      const data = [];
+      
+      // Historical data
+      for (let i = -30; i < 0; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        data.push({
+          date: date.toISOString().split('T')[0],
+          price: basePrice + Math.sin(i/5) * 10,
+          type: 'historical'
+        });
+      }
+
+      // Predicted data
+      for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        data.push({
+          date: date.toISOString().split('T')[0],
+          price: basePrice + Math.sin(i/3) * 15,
+          type: 'prediction'
+        });
+      }
+
+      setChartData(data);
+      setLoading(false);
+    };
+
+    generateSampleData();
+  }, [symbol]);
+
+  if (loading) return <div>Loading chart...</div>;
+  if (error) return <div>Error loading chart</div>;
 
   return (
-    <div className="space-y-4">
-      {factors.map((factor, index) => (
-        <div 
-          key={index} 
-          className="p-4 bg-white border rounded-lg hover:shadow-sm transition"
-        >
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-semibold text-gray-800">{factor.name}</h3>
-            <span 
-              className={`px-2 py-1 text-xs rounded-full ${impactColors[factor.impact]}`}
-            >
-              {factor.impact} Impact
-            </span>
-          </div>
-          <p className="text-xs text-gray-600">{factor.description}</p>
-        </div>
-      ))}
+    <div className="w-full h-96">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          
+          <Line 
+            type="monotone" 
+            dataKey="price"
+            stroke="#8884d8"
+            strokeWidth={2}
+            dot={false}
+            name="Historical Price"
+            filter={d => d.type === 'historical'}
+          />
+          
+          <Line 
+            type="monotone" 
+            dataKey="price"
+            stroke="#82ca9d"
+            strokeDasharray="5 5"
+            dot={false}
+            name="Predicted Price"
+            filter={d => d.type === 'prediction'}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }

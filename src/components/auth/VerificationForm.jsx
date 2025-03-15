@@ -1,3 +1,4 @@
+"use client";
 <document_content>import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '../common/Button';

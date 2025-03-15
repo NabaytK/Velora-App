@@ -1,9 +1,13 @@
+"use client"
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
   const [expanded, setExpanded] = useState(true);
   
   const navItems = [
@@ -59,8 +63,12 @@ export default function Sidebar() {
     setExpanded(!expanded);
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
-    <aside className={`bg-indigo-700 text-white ${expanded ? 'w-64' : 'w-20'} transition-all duration-300 flex flex-col`}>
+    <aside className={`bg-indigo-700 text-white ${expanded ? 'w-64' : 'w-20'} transition-all duration-300 flex flex-col h-screen sticky top-0`}>
       <div className="flex items-center p-4 border-b border-indigo-600">
         {expanded ? (
           <div className="flex items-center justify-between w-full">
@@ -68,7 +76,7 @@ export default function Sidebar() {
               <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
               </svg>
-              <span className="ml-2 text-xl font-bold">StockAI</span>
+              <span className="ml-2 text-xl font-bold">Velora</span>
             </div>
             <button onClick={toggleSidebar} className="text-white focus:outline-none">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -110,18 +118,21 @@ export default function Sidebar() {
       <div className="p-4 mt-auto border-t border-indigo-600">
         <div className="flex items-center">
           <div className="flex items-center justify-center w-10 h-10 text-indigo-700 bg-white rounded-full">
-            <span className="font-bold">JD</span>
+            <span className="font-bold">{user?.name?.substring(0, 2).toUpperCase() || 'U'}</span>
           </div>
           {expanded && (
-            <div className="ml-3">
-              <p className="font-medium">John Doe</p>
-              <p className="text-sm text-indigo-200">Premium Plan</p>
+            <div className="ml-3 overflow-hidden">
+              <p className="font-medium truncate">{user?.name || 'User'}</p>
+              <p className="text-sm text-indigo-200 truncate">{user?.email || 'user@example.com'}</p>
             </div>
           )}
         </div>
         
         {expanded && (
-          <button className="flex items-center w-full px-3 py-2 mt-4 text-sm font-medium text-white rounded-md hover:bg-indigo-600">
+          <button 
+            className="flex items-center w-full px-3 py-2 mt-4 text-sm font-medium text-white rounded-md hover:bg-indigo-600"
+            onClick={handleLogout}
+          >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>

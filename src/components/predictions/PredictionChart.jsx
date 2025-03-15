@@ -1,16 +1,49 @@
-import { useState } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export default function PredictionChart() {
-  const [chartData, setChartData] = useState([
-    { date: '2025-01-01', historical: 180, predicted: null },
-    { date: '2025-01-02', historical: 182, predicted: null },
-    { date: '2025-01-03', historical: 181, predicted: null },
-    { date: '2025-01-04', historical: 183, predicted: null },
-    { date: '2025-01-05', historical: 185, predicted: 187 },
-    { date: '2025-01-06', historical: null, predicted: 188 },
-    { date: '2025-01-07', historical: null, predicted: 190 },
-  ]);
+export default function PredictionChart({ symbol = 'AAPL' }) {
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const generateSampleData = () => {
+      const basePrice = Math.random() * 100 + 100;
+      const data = [];
+      
+      // Historical data
+      for (let i = -30; i < 0; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        data.push({
+          date: date.toISOString().split('T')[0],
+          price: basePrice + Math.sin(i/5) * 10,
+          type: 'historical'
+        });
+      }
+
+      // Predicted data
+      for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        data.push({
+          date: date.toISOString().split('T')[0],
+          price: basePrice + Math.sin(i/3) * 15,
+          type: 'prediction'
+        });
+      }
+
+      setChartData(data);
+      setLoading(false);
+    };
+
+    generateSampleData();
+  }, [symbol]);
+
+  if (loading) return <div>Loading chart...</div>;
+  if (error) return <div>Error loading chart</div>;
 
   return (
     <div className="w-full h-96">
@@ -21,19 +54,25 @@ export default function PredictionChart() {
           <YAxis />
           <Tooltip />
           <Legend />
+          
           <Line 
             type="monotone" 
-            dataKey="historical" 
-            stroke="#8884d8" 
-            strokeWidth={2} 
-            dot={{ stroke: '#8884d8', strokeWidth: 2 }}
+            dataKey="price"
+            stroke="#8884d8"
+            strokeWidth={2}
+            dot={false}
+            name="Historical Price"
+            filter={d => d.type === 'historical'}
           />
+          
           <Line 
             type="monotone" 
-            dataKey="predicted" 
-            stroke="#82ca9d" 
-            strokeDasharray="5 5" 
-            dot={{ stroke: '#82ca9d', strokeWidth: 2 }}
+            dataKey="price"
+            stroke="#82ca9d"
+            strokeDasharray="5 5"
+            dot={false}
+            name="Predicted Price"
+            filter={d => d.type === 'prediction'}
           />
         </LineChart>
       </ResponsiveContainer>

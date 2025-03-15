@@ -1,6 +1,6 @@
-import CandlestickChart from '@/components/graphs/CandlestickChart';
-import SentimentAnalysis from '@/components/graphs/SentimentAnalysis';
-import CorrelationGraph from '@/components/graphs/CorrelationGraph';
+import CandlestickChart from '@/app/dashboard/graphs/CandlestickChart';
+import SentimentAnalysis from '@/app/dashboard/graphs/SentimentAnalysis';
+import CorrelationGraph from '@/app/dashboard/graphs/CorrelationGraph';
 import SearchBar from '@/components/dashboard/SearchBar';
 
 export default function Graphs() {

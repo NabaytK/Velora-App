@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String?
+  password       String
+  emailVerified  Boolean   @default(false)
+  verificationToken String? @unique
+  verificationTokenExpiry DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  profile        UserProfile?
+  watchlist      Watchlist[]
+  portfolio      Portfolio[]
+}
+
+model UserProfile {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id])
+  
+  membershipLevel String    @default("Basic")
+  lastLogin       DateTime?
+  phoneNumber     String?
+  address         String?
+}
+
+model Watchlist {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  
+  ticker     String
+  name       String
+  addedAt    DateTime @default(now())
+}
+
+model Portfolio {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  
+  ticker     String
+  shares     Float
+  avgPrice   Float
+  currentPrice Float?
+  
+  purchaseDate DateTime @default(now())
+}

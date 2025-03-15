@@ -1,14 +1,14 @@
-import Sidebar from '@/components/dashboard/Sidebar';
-import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import Sidebar from '@/components/dashboard/Sidebar';
 
-export default function DashboardLayout({ children }) {
-  // In a real app, you'd verify the authentication token here
-  // This is a simplified example
+export default async function DashboardLayout({ children }) {
+  // Use async to properly await cookie retrieval
   const cookieStore = cookies();
-  const isAuthenticated = cookieStore.get('auth_token');
-  
-  if (!isAuthenticated) {
+  const token = cookieStore.get('auth_token');
+
+  // If no token, redirect to login
+  if (!token) {
     redirect('/auth/login');
   }
 

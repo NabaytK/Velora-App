@@ -1,11 +1,11 @@
-import './globals.css';
 import { Inter } from 'next/font/google';
+import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'StockAI - AI-Powered Stock Predictions',
+  title: 'Velora - AI-Powered Stock Predictions',
   description: 'Get accurate stock predictions using advanced AI models',
 };
 
