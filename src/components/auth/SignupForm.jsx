@@ -73,10 +73,12 @@ export default function SignupForm() {
       const data = await response.json();
 
       if (response.ok) {
-        // Successful signup
-        console.log('Signup successful', data);
-        // Redirect to login or show success message
-        router.push('/auth/login');
+        // Successful signup - redirect to verification or login
+        if (data.message && data.message.includes('verify')) {
+          router.push('/auth/verify');
+        } else {
+          router.push('/auth/login');
+        }
       } else {
         // Handle signup error
         setError(data.message || 'Signup failed');

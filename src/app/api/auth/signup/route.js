@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
-import { sendVerificationEmail } from '@/lib/email';
 
 const prisma = new PrismaClient();
 
@@ -20,10 +18,13 @@ export async function POST(request) {
     }
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ 
+      where: { email: email.toLowerCase() } 
+    });
+
     if (existingUser) {
       return NextResponse.json(
-        { message: 'User with this email already exists' }, 
+        { message: 'An account with this email already exists' }, 
         { status: 409 }
       );
     }
@@ -31,36 +32,42 @@ export async function POST(request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Generate verification token
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
     // Create user
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
+        name: name.trim(),
+        email: email.toLowerCase(),
         password: hashedPassword,
-        verificationToken,
-        verificationTokenExpiry,
-        profile: { create: {} } // Create empty profile
+        emailVerified: true, // Simplified for now
+        profile: { 
+          create: {
+            membershipLevel: 'Basic'
+          } 
+        }
       }
     });
 
-    // Send verification email
-    await sendVerificationEmail(email, verificationToken);
-
+    // Return success response
     return NextResponse.json(
       { 
-        message: 'Registration successful. Please check your email to verify your account.',
+        message: 'Account created successfully',
         userId: user.id 
       }, 
       { status: 201 }
     );
   } catch (error) {
     console.error('Signup error:', error);
+    
+    // More specific error handling
+    if (error.code === 'P2002') {
+      return NextResponse.json(
+        { message: 'An account with this email already exists' }, 
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
-      { message: 'Internal server error' }, 
+      { message: 'Failed to create account. Please try again.' }, 
       { status: 500 }
     );
   }

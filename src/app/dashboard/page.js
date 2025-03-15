@@ -12,34 +12,30 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <SearchBar />
-      <AIStockChatbot ticker="AAPL" />
-</div>
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4">Stock Prediction</h2>
             <PredictionChart />
-          <AIStockChatbot ticker="AAPL" />
-</div>
+          </div>
           
           <Portfolio />
-        <AIStockChatbot ticker="AAPL" />
-</div>
+        </div>
         
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4">AI Trading Assistant</h2>
             <ChatInterface />
-          <AIStockChatbot ticker="AAPL" />
-</div>
+          </div>
           
           <NewsSection />
-        <AIStockChatbot ticker="AAPL" />
-</div>
+        </div>
+      </div>
+      
+      {/* AI Stock Chatbot fixed position at bottom right */}
       <AIStockChatbot ticker="AAPL" />
-</div>
-    <AIStockChatbot ticker="AAPL" />
-</div>
+    </div>
   );
 }

@@ -1,74 +1,32 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import SignupForm from '@/components/auth/SignupForm';
+import Link from 'next/link';
 
-const prisma = new PrismaClient();
+export default function Signup() {
+  return (
+    <div className="flex flex-col justify-center min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <Link href="/">
+          <div className="flex items-center justify-center">
+            <svg className="w-10 h-10 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+            </svg>
+            <span className="text-2xl font-bold text-indigo-600">Velora</span>
+          </div>
+        </Link>
+        <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
+          Create a new account
+        </h2>
+        <p className="mt-2 text-sm text-center text-gray-600">
+          Or{' '}
+          <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+            sign in to your existing account
+          </Link>
+        </p>
+      </div>
 
-export async function POST(request) {
-  try {
-    const body = await request.json();
-    const { name, email, password } = body;
-
-    // Validate input
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { message: 'Name, email, and password are required' }, 
-        { status: 400 }
-      );
-    }
-
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({ 
-      where: { email: email.toLowerCase() } 
-    });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { message: 'An account with this email already exists' }, 
-        { status: 409 }
-      );
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        name: name.trim(),
-        email: email.toLowerCase(),
-        password: hashedPassword,
-        emailVerified: true, // Simplified for now
-        profile: { 
-          create: {
-            membershipLevel: 'Basic'
-          } 
-        }
-      }
-    });
-
-    // Return success response
-    return NextResponse.json(
-      { 
-        message: 'Account created successfully',
-        userId: user.id 
-      }, 
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('Signup error:', error);
-    
-    // More specific error handling
-    if (error.code === 'P2002') {
-      return NextResponse.json(
-        { message: 'An account with this email already exists' }, 
-        { status: 409 }
-      );
-    }
-
-    return NextResponse.json(
-      { message: 'Failed to create account. Please try again.' }, 
-      { status: 500 }
-    );
-  }
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <SignupForm />
+      </div>
+    </div>
+  );
 }

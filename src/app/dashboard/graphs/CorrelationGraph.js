@@ -1,11 +1,4 @@
 "use client";
-<<<<<<< HEAD
-import React from "react";
-
-export default function CorrelationGraph() {
-  return <div>Correlation Graph Placeholder</div>;
-}
-=======
 
 import React from "react";
 
@@ -16,5 +9,3 @@ export default function CorrelationGraph() {
     </div>
   );
 }
-
->>>>>>> 474c986 (Saving local changes before pulling)
