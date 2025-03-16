@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Use regular CSS instead of @apply for now */
 body {
-  background-color: #f3f4f6; /* This is equivalent to bg-gray-100 */
+  background-color: #f3f4f6;
 }

@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'standalone'
+}
 
-  // Remove appDir from experimental
-  experimental: {}
-};
-
-module.exports = nextConfig;
+module.exports = nextConfig

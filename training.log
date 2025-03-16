@@ -1,0 +1,2 @@
+2025-03-16 04:21:26,928 - ERROR: Merged data file not found: data/merged_data.csv
+2025-03-16 04:21:26,928 - INFO: Please run data preparation scripts first.

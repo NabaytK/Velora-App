@@ -1,600 +1,658 @@
-// main.js - Core functionality for Velora Trading Platform
+// Constants and configurations
+const API_BASE_URL = '/api';
 
-// Stock data from the top 50 symbols defined in fetch_data.py
+// DOM elements
+const stockChartCanvas = document.getElementById('stockChartCanvas');
+const chartLoading = document.getElementById('chartLoading');
+const timeframeOptions = document.querySelectorAll('.timeframe-option');
+const currentPrice = document.getElementById('currentPrice');
+const priceChange = document.getElementById('priceChange');
+const volume = document.getElementById('volume');
+const marketCap = document.getElementById('marketCap');
+const recommendation = document.getElementById('recommendation');
+const predictionContainer = document.getElementById('predictionContainer');
+const stockSelector = document.getElementById('stockSelector');
+const stockSelectorModal = document.getElementById('stockSelectorModal');
+const closeSelectorBtn = document.getElementById('closeSelectorBtn');
+const stockGrid = document.getElementById('stockGrid');
+const loginModal = document.getElementById('loginModal');
+const loginForm = document.getElementById('loginForm');
+const mfaOptions = document.querySelectorAll('.mfa-option');
+const mfaInputSection = document.getElementById('mfaInputSection');
+const chatMessages = document.getElementById('chatMessages');
+const quizContainer = document.getElementById('quizContainer');
+
+// Chat functionality
+const chatInput = document.querySelector('.chat-input input');
+const chatSendButton = document.querySelector('.chat-input button');
+
+// Top 50 Symbols
 const top50Symbols = [
-    "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "JPM", "V", "PG",
-    "MA", "HD", "CVX", "MRK", "ABBV", "LLY", "BAC", "PFE", "AVGO", "KO",
-    "PEP", "TMO", "COST", "DIS", "CSCO", "ADBE", "WFC", "VZ", "ACN", "ABT",
-    "CRM", "DHR", "INTC", "NFLX", "CMCSA", "TXN", "NEE", "QCOM", "HON", "AMGN",
-    "IBM", "LOW", "INTU", "PM", "ORCL", "MCD"
+  "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "JPM", "V", "PG",
+  "MA", "HD", "CVX", "MRK", "ABBV", "LLY", "BAC", "PFE", "AVGO", "KO",
+  "PEP", "TMO", "COST", "DIS", "CSCO", "ADBE", "WFC", "VZ", "ACN", "ABT",
+  "CRM", "DHR", "INTC", "NFLX", "CMCSA", "TXN", "NEE", "QCOM", "HON", "AMGN",
+  "IBM", "LOW", "INTU", "PM", "ORCL", "MCD"
 ];
 
 // Company name mapping
 const companyNames = {
-    "AAPL": "Apple Inc.",
-    "MSFT": "Microsoft Corp.",
-    "GOOGL": "Alphabet Inc. (Google)",
-    "AMZN": "Amazon.com Inc.",
-    "TSLA": "Tesla Inc.",
-    "NVDA": "NVIDIA Corp.",
-    "META": "Meta Platforms Inc.",
-    "JPM": "JPMorgan Chase & Co.",
-    "V": "Visa Inc.",
-    "PG": "Procter & Gamble Co.",
-    "MA": "Mastercard Inc.",
-    "HD": "Home Depot Inc.",
-    "CVX": "Chevron Corp.",
-    "MRK": "Merck & Co.",
-    "ABBV": "AbbVie Inc.",
-    "LLY": "Eli Lilly & Co.",
-    "BAC": "Bank of America Corp.",
-    "PFE": "Pfizer Inc.",
-    "AVGO": "Broadcom Inc.",
-    "KO": "Coca-Cola Co.",
-    "PEP": "PepsiCo Inc.",
-    "TMO": "Thermo Fisher Scientific",
-    "COST": "Costco Wholesale Corp.",
-    "DIS": "Walt Disney Co.",
-    "CSCO": "Cisco Systems Inc.",
-    "ADBE": "Adobe Inc.",
-    "WFC": "Wells Fargo & Co.",
-    "VZ": "Verizon Communications",
-    "ACN": "Accenture PLC",
-    "ABT": "Abbott Laboratories",
-    "CRM": "Salesforce Inc.",
-    "DHR": "Danaher Corp.",
-    "INTC": "Intel Corp.",
-    "NFLX": "Netflix Inc.",
-    "CMCSA": "Comcast Corp.",
-    "TXN": "Texas Instruments",
-    "NEE": "NextEra Energy Inc.",
-    "QCOM": "Qualcomm Inc.",
-    "HON": "Honeywell International",
-    "AMGN": "Amgen Inc.",
-    "IBM": "IBM Corp.",
-    "LOW": "Lowe's Companies Inc.",
-    "INTU": "Intuit Inc.",
-    "PM": "Philip Morris International",
-    "ORCL": "Oracle Corp.",
-    "MCD": "McDonald's Corp."
+  "AAPL": "Apple Inc.",
+  "MSFT": "Microsoft Corp.",
+  "GOOGL": "Alphabet Inc. (Google)",
+  "AMZN": "Amazon.com Inc.",
+  "TSLA": "Tesla Inc.",
+  "NVDA": "NVIDIA Corp.",
+  "META": "Meta Platforms Inc.",
+  "JPM": "JPMorgan Chase & Co.",
+  "V": "Visa Inc.",
+  "PG": "Procter & Gamble Co.",
+  "MA": "Mastercard Inc.",
+  "HD": "Home Depot Inc.",
+  "CVX": "Chevron Corp.",
+  "MRK": "Merck & Co.",
+  "ABBV": "AbbVie Inc.",
+  "LLY": "Eli Lilly & Co.",
+  "BAC": "Bank of America Corp.",
+  "PFE": "Pfizer Inc.",
+  "AVGO": "Broadcom Inc.",
+  "KO": "Coca-Cola Co.",
+  "PEP": "PepsiCo Inc.",
+  "TMO": "Thermo Fisher Scientific",
+  "COST": "Costco Wholesale Corp.",
+  "DIS": "Walt Disney Co.",
+  "CSCO": "Cisco Systems Inc.",
+  "ADBE": "Adobe Inc.",
+  "WFC": "Wells Fargo & Co.",
+  "VZ": "Verizon Communications",
+  "ACN": "Accenture PLC",
+  "ABT": "Abbott Laboratories",
+  "CRM": "Salesforce Inc.",
+  "DHR": "Danaher Corp.",
+  "INTC": "Intel Corp.",
+  "NFLX": "Netflix Inc.",
+  "CMCSA": "Comcast Corp.",
+  "TXN": "Texas Instruments",
+  "NEE": "NextEra Energy Inc.",
+  "QCOM": "Qualcomm Inc.",
+  "HON": "Honeywell International",
+  "AMGN": "Amgen Inc.",
+  "IBM": "IBM Corp.",
+  "LOW": "Lowe's Companies Inc.",
+  "INTU": "Intuit Inc.",
+  "PM": "Philip Morris International",
+  "ORCL": "Oracle Corp.",
+  "MCD": "McDonald's Corp."
 };
 
-// Generate sample stock data based on project structure
-function generateStockData() {
-    const stockData = {};
-    
-    top50Symbols.forEach(symbol => {
-        // Generate random current price between $50 and $500
-        const currentPrice = Math.random() * 450 + 50;
-        // Generate random change between -5% and +5%
-        const changePercent = (Math.random() * 10) - 5;
-        const change = currentPrice * (changePercent / 100);
-        const previousClose = currentPrice - change;
-        
-        // Generate volume (in millions)
-        const volume = Math.floor(Math.random() * 90) + 10 + 'M';
-        
-        // Generate market cap (in billions or trillions)
-        const marketCapValue = currentPrice * (Math.random() * 20 + 10);
-        const marketCap = marketCapValue > 1000 ? 
-            `$${(marketCapValue/1000).toFixed(2)}T` : 
-            `$${marketCapValue.toFixed(2)}B`;
-        
-        // Determine recommendation based on changePercent
-        let recommendation;
-        if (changePercent > 2) {
-            recommendation = 'BUY';
-        } else if (changePercent < -2) {
-            recommendation = 'SELL';
-        } else {
-            recommendation = 'HOLD';
-        }
-        
-        // Generate predictions for next 3 days
-        const predictions = [];
-        let nextPrice = currentPrice;
-        
-        for (let i = 1; i <= 3; i++) {
-            // Each day's prediction adds 0-3% to previous day
-            const dailyChange = (Math.random() * 3);
-            nextPrice = nextPrice * (1 + (dailyChange / 100));
-            
-            // Confidence decreases as we predict further into the future
-            const confidence = Math.floor(95 - (i * 7) + (Math.random() * 10));
-            
-            predictions.push({
-                day: i,
-                price: nextPrice,
-                confidence: confidence
-            });
-        }
-        
-        // Generate 30 days of historical data
-        const historical = [];
-        let historicalDate = new Date();
-        historicalDate.setDate(historicalDate.getDate() - 30);
-        
-        let price = previousClose;
-        for (let i = 0; i < 30; i++) {
-            // Create date string
-            const dateString = historicalDate.toISOString().split('T')[0];
-            
-            // Small random change for previous day
-            price = price * (1 + ((Math.random() * 4) - 2) / 100);
-            
-            historical.push({
-                date: dateString,
-                price: price
-            });
-            
-            // Move to next day
-            historicalDate.setDate(historicalDate.getDate() + 1);
-        }
-        
-        // Sort historical data by date
-        historical.sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-        // Add to stock data
-        stockData[symbol] = {
-            name: companyNames[symbol],
-            currentPrice: currentPrice,
-            previousClose: previousClose,
-            change: change,
-            changePercent: changePercent,
-            volume: volume,
-            marketCap: marketCap,
-            recommendation: recommendation,
-            predictions: predictions,
-            historical: historical
-        };
-    });
-    
-    return stockData;
-}
-
-// Generate stock data
-const stockData = generateStockData();
-
-// Current selected stock
-let currentStock = 'AAPL';
+// ===================== CHART INITIALIZATION ======================
 let stockChart = null;
-let timeframeInDays = 30;
+let currentStock = 'AAPL';
+let currentTimeframe = '30'; // Default: 1 month
 
 // Initialize the chart
 function initializeChart() {
-    const ctx = document.getElementById('stockChartCanvas').getContext('2d');
+  if (stockChartCanvas) {
+    const ctx = stockChartCanvas.getContext('2d');
     stockChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [], // Will be populated with dates
-            datasets: [
-                {
-                    label: 'Historical Price',
-                    data: [], // Will be populated with historical prices
-                    borderColor: '#0066cc',
-                    backgroundColor: 'rgba(0, 102, 204, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.2
-                },
-                {
-                    label: 'Predicted Price',
-                    data: [], // Will be populated with predicted prices
-                    borderColor: '#6c38cc',
-                    borderDash: [5, 5],
-                    borderWidth: 2,
-                    tension: 0.2,
-                    pointStyle: 'circle',
-                    pointRadius: 5,
-                    pointHoverRadius: 8
-                }
-            ]
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Historical',
+            data: [],
+            borderColor: '#4F46E5',
+            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+            fill: true,
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 4
+          },
+          {
+            label: 'Predicted',
+            data: [],
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            borderWidth: 2,
+            borderDash: [5, 5],
+            tension: 0.2,
+            pointRadius: 0,
+            pointHoverRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          }
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                }
-            },
-            scales: {
-                x: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: 'Date'
-                    }
-                },
-                y: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: 'Price ($)'
-                    }
-                }
-            }
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
         }
+      }
     });
+  }
 }
 
-// Update the chart with stock data
-function updateChart(stockSymbol, timeframe) {
-    if (!stockChart) {
-        initializeChart();
-    }
-
-    const stock = stockData[stockSymbol];
-    if (!stock) {
-        console.error('Stock data not found for:', stockSymbol);
-        return;
-    }
-
-    // Show loading state
-    document.getElementById('chartLoading').style.display = 'flex';
+// ===================== API FUNCTIONS ======================
+// Fetch stock data from API
+async function fetchStockData(symbol, days) {
+  showLoader();
+  
+  try {
+    // Mock data for now until API is connected
+    const dates = [];
+    const prices = [];
+    const basePrice = Math.random() * 100 + 100; // Random base price between 100-200
     
-    // Simulate API call delay
-    setTimeout(() => {
-        // Update stock details
-        document.getElementById('currentPrice').textContent = `$${stock.currentPrice.toFixed(2)}`;
-        const changeElement = document.getElementById('priceChange');
-        changeElement.textContent = `${stock.change > 0 ? '+' : ''}$${stock.change.toFixed(2)} (${stock.changePercent.toFixed(1)}%)`;
-        changeElement.className = stock.change >= 0 ? 'metric-value price-up' : 'metric-value price-down';
-        
-        document.getElementById('volume').textContent = stock.volume;
-        document.getElementById('marketCap').textContent = stock.marketCap;
-        
-        // Update recommendation
-        const recommendationElement = document.getElementById('recommendation');
-        recommendationElement.textContent = stock.recommendation;
-        recommendationElement.className = `recommendation ${stock.recommendation.toLowerCase()}`;
-        
-        // Update predictions
-        for (let i = 0; i < 3; i++) {
-            if (stock.predictions[i]) {
-                document.getElementById(`day${i+1}Price`).textContent = `$${stock.predictions[i].price.toFixed(2)}`;
-                document.getElementById(`day${i+1}Confidence`).textContent = `${stock.predictions[i].confidence}%`;
-                document.getElementById(`day${i+1}ConfidenceBar`).style.width = `${stock.predictions[i].confidence}%`;
-            }
-        }
-        
-        // Get historical data
-        const filteredData = stock.historical;
-        
-        // Prepare chart data
-        const labels = filteredData.map(item => item.date);
-        const prices = filteredData.map(item => item.price);
-        
-        // Create prediction data - extend 3 days into the future
-        const lastDate = new Date(labels[labels.length - 1]);
-        const predictionLabels = [];
-        const predictionData = new Array(labels.length).fill(null); // null for historical dates
-        
-        // Add prediction points for future dates
-        for (let i = 1; i <= 3; i++) {
-            const newDate = new Date(lastDate);
-            newDate.setDate(lastDate.getDate() + i);
-            const dateString = newDate.toISOString().split('T')[0];
-            predictionLabels.push(dateString);
-            predictionData.push(stock.predictions[i-1].price);
-        }
-        
-        // Update chart data
-        stockChart.data.labels = [...labels, ...predictionLabels];
-        stockChart.data.datasets[0].data = [...prices, ...new Array(3).fill(null)]; // null for future dates
-        stockChart.data.datasets[1].data = predictionData;
-        stockChart.update();
-        
-        // Hide loading state
-        document.getElementById('chartLoading').style.display = 'none';
-    }, 1000); // Simulated 1-second delay
-}
-
-// Predefined responses for the AI chatbot
-const botResponses = {
-    buy: "Based on our LSTM model's analysis, this stock is marked as a 'Buy' due to three key factors:<br><br>1. Recent positive earnings report showing growth above expectations<br>2. Increased trading volume indicating strong market interest<br>3. Positive momentum with the stock trading above its 50-day moving average<br><br>The prediction has a high confidence score based on historical accuracy for this stock.",
-    sell: "Our model suggests a 'Sell' recommendation based on:<br><br>1. Technical indicators showing overbought conditions<br>2. Recent negative earnings surprise<br>3. Decreasing volume on price increases, suggesting weakening momentum<br><br>The confidence score for this prediction is moderate, as the stock shows mixed signals.",
-    hold: "The 'Hold' recommendation comes from our LSTM model analyzing:<br><br>1. Stable price action within a defined range<br>2. Average trading volume without significant changes<br>3. Mixed technical indicators not showing a clear direction<br><br>The model has moderate confidence in this prediction due to the mixed signals.",
-    general: "I can help with understanding stock predictions, market analysis, and trading strategies. Just ask specific questions about stocks or predictions you see here!"
-};
-
-// Questions for the learning quiz
-const quizQuestions = [
-    {
-        question: "What had the highest impact on this stock's 'Buy' recommendation?",
-        options: ["Market sentiment", "Recent earnings report", "Trading volume", "Technical indicators"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which model is used for the price predictions?",
-        options: ["Random Forest", "LSTM neural network", "Linear Regression", "Moving Average"],
-        correctAnswer: 1
-    },
-    {
-        question: "What does a high confidence score mean?",
-        options: ["The stock will definitely increase", "Historical predictions were accurate", "Many analysts agree", "The model is certain"],
-        correctAnswer: 1
-    },
-    {
-        question: "What data is used to train the prediction model?",
-        options: ["Only price data", "Price, volume and technical indicators", "News headlines", "Social media sentiment"],
-        correctAnswer: 1
-    }
-];
-
-// Current quiz question
-let currentQuiz = null;
-
-// Add a message to the chat
-function addMessage(text, isUser) {
-    const chatMessages = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = isUser ? 'message user-message' : 'message bot-message';
-    
-    const content = document.createElement('div');
-    content.className = 'message-content';
-    content.innerHTML = text;
-    
-    messageDiv.appendChild(content);
-    chatMessages.appendChild(messageDiv);
-    
-    // Scroll to bottom
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-// Display a quiz question
-function showQuiz() {
-    const quizContainer = document.getElementById('quizContainer');
-    const randomIndex = Math.floor(Math.random() * quizQuestions.length);
-    currentQuiz = quizQuestions[randomIndex];
-    
-    document.getElementById('quizQuestion').textContent = currentQuiz.question;
-    
-    const optionsContainer = document.getElementById('quizOptions');
-    optionsContainer.innerHTML = '';
-    
-    currentQuiz.options.forEach((option, index) => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'quiz-option';
-        optionDiv.textContent = option;
-        optionDiv.dataset.index = index;
-        optionDiv.addEventListener('click', selectQuizOption);
-        optionsContainer.appendChild(optionDiv);
-    });
-    
-    quizContainer.style.display = 'block';
-}
-
-// Handle quiz option selection
-function selectQuizOption(event) {
-    const options = document.querySelectorAll('.quiz-option');
-    options.forEach(option => option.classList.remove('selected'));
-    
-    event.target.classList.add('selected');
-}
-
-// Process the user's chat message
-function processMessage(message) {
-    let response = botResponses.general;
-    
-    // Simple keyword matching
-    const lowerMessage = message.toLowerCase();
-    if (lowerMessage.includes('buy') || lowerMessage.includes('why buy')) {
-        response = botResponses.buy;
-        // Show a quiz after responding about "buy"
-        setTimeout(showQuiz, 1000);
-    } else if (lowerMessage.includes('sell') || lowerMessage.includes('why sell')) {
-        response = botResponses.sell;
-    } else if (lowerMessage.includes('hold') || lowerMessage.includes('why hold')) {
-        response = botResponses.hold;
-    } else if (lowerMessage.includes('how') && lowerMessage.includes('prediction')) {
-        response = "Our predictions use Long Short-Term Memory (LSTM) neural networks, a type of recurrent neural network well-suited for time series forecasting. The model analyzes historical price patterns, trading volumes, and technical indicators to identify trends and make future price predictions.";
-    } else if (lowerMessage.includes(currentStock.toLowerCase())) {
-        response = `${currentStock} (${companyNames[currentStock]}) is currently showing a ${stockData[currentStock].recommendation} recommendation based on our LSTM model analysis. The model has a confidence level of ${stockData[currentStock].predictions[0].confidence}% for tomorrow's prediction.`;
+    // Generate historical dates and prices
+    const today = new Date();
+    for (let i = days; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      dates.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      
+      // Generate a price with some variation
+      const noise = Math.sin(i / 5) * 10 + (Math.random() - 0.5) * 10;
+      prices.push(basePrice + noise);
     }
     
-    return response;
+    // Return the generated data
+    return {
+      dates,
+      prices,
+      currentPrice: prices[prices.length - 1],
+      change: prices[prices.length - 1] - prices[prices.length - 2],
+      percentChange: ((prices[prices.length - 1] - prices[prices.length - 2]) / prices[prices.length - 2]) * 100,
+      volume: Math.floor(Math.random() * 50) + 20 + 'M',
+      marketCap: (Math.floor(Math.random() * 2000) + 500) + 'B'
+    };
+  } catch (error) {
+    console.error('Error fetching stock data:', error);
+    return null;
+  } finally {
+    hideLoader();
+  }
 }
 
-// Submit the quiz answer
-function submitQuizAnswer() {
-    const selectedOption = document.querySelector('.quiz-option.selected');
-    if (!selectedOption) {
-        alert('Please select an answer');
-        return;
+// Fetch prediction data from API
+async function fetchPrediction(symbol) {
+  try {
+    console.log(`Fetching prediction for ${symbol}...`);
+    
+    // Try to use the real API
+    try {
+      const response = await fetch(`${API_BASE_URL}/predict`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ticker: symbol }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Prediction API response:', data);
+        return data;
+      }
+    } catch (apiError) {
+      console.warn('API call failed, using mock data:', apiError);
     }
     
-    const selectedIndex = parseInt(selectedOption.dataset.index);
-    const isCorrect = selectedIndex === currentQuiz.correctAnswer;
+    // If API call fails, use mock data
+    const currentPrice = Math.floor(Math.random() * 200) + 100;
+    const day1Change = (Math.random() * 6) - 2; // -2% to +4%
+    const day2Change = day1Change + (Math.random() * 4) - 1; // Additional -1% to +3%
+    const day3Change = day2Change + (Math.random() * 4) - 1; // Additional -1% to +3%
     
-    // Hide quiz container
-    document.getElementById('quizContainer').style.display = 'none';
+    const recommendation = day1Change > 2 ? 'BUY' : 
+                          day1Change < -1 ? 'SELL' : 'HOLD';
     
-    // Add feedback message
-    if (isCorrect) {
-        addMessage("Correct! You've earned 10 points. Your understanding of our prediction model is improving.", false);
-    } else {
-        addMessage(`Not quite. The correct answer is: ${currentQuiz.options[currentQuiz.correctAnswer]}. Keep learning!`, false);
+    return {
+      ticker: symbol,
+      current_price: currentPrice,
+      predicted_price: currentPrice * (1 + (day1Change / 100)),
+      percent_change: day1Change,
+      recommendation: recommendation,
+      confidence: 75 + Math.floor(Math.random() * 20),
+      explanation: `This is a ${recommendation.toLowerCase()} recommendation for ${symbol} based on our AI analysis.`,
+      day1: {
+        price: currentPrice * (1 + (day1Change / 100)),
+        percent: day1Change,
+        confidence: 85 + Math.floor(Math.random() * 10)
+      },
+      day2: {
+        price: currentPrice * (1 + (day2Change / 100)),
+        percent: day2Change,
+        confidence: 75 + Math.floor(Math.random() * 15)
+      },
+      day3: {
+        price: currentPrice * (1 + (day3Change / 100)),
+        percent: day3Change,
+        confidence: 70 + Math.floor(Math.random() * 15)
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching prediction:', error);
+    return null;
+  }
+}
+
+// ===================== UI UPDATE FUNCTIONS ======================
+// Update chart with new data
+function updateChart(symbol, stockData, predictionData) {
+  if (!stockChart || !stockData) return;
+  
+  // Clear previous data
+  stockChart.data.labels = [];
+  stockChart.data.datasets[0].data = [];
+  stockChart.data.datasets[1].data = [];
+  
+  // Update historical data
+  stockChart.data.labels = stockData.dates;
+  stockChart.data.datasets[0].data = stockData.prices;
+  
+  // Add prediction data if available
+  if (predictionData) {
+    const lastDate = new Date(stockData.dates[stockData.dates.length - 1]);
+    
+    // Add prediction points for 3 days
+    for (let i = 1; i <= 3; i++) {
+      const futureDate = new Date(lastDate);
+      futureDate.setDate(lastDate.getDate() + i);
+      const dateString = futureDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      
+      stockChart.data.labels.push(dateString);
+      
+      // Add null to historical data (to create gap)
+      stockChart.data.datasets[0].data.push(null);
+      
+      // Add prediction data
+      let predPrice;
+      if (i === 1) predPrice = predictionData.day1.price;
+      else if (i === 2) predPrice = predictionData.day2.price;
+      else predPrice = predictionData.day3.price;
+      
+      stockChart.data.datasets[1].data.push(predPrice);
     }
+  }
+  
+  // Update chart
+  stockChart.update();
 }
 
-// Show login modal
-function showLoginModal() {
-    document.getElementById('loginModal').style.display = 'block';
+// Update stock metrics display
+function updateStockMetrics(symbol, stockData, predictionData) {
+  if (!stockData) return;
+  
+  // Update current price
+  if (currentPrice) {
+    currentPrice.textContent = `${stockData.currentPrice.toFixed(2)}`;
+  }
+  
+  // Update price change
+  if (priceChange) {
+    const changeValue = stockData.change.toFixed(2);
+    const percentChangeValue = stockData.percentChange.toFixed(1);
+    
+    priceChange.textContent = `${changeValue >= 0 ? '+' : ''}${Math.abs(changeValue).toFixed(2)} (${changeValue >= 0 ? '+' : ''}${percentChangeValue}%)`;
+    priceChange.className = `metric-value ${changeValue >= 0 ? 'price-up' : 'price-down'}`;
+  }
+  
+  // Update volume
+  if (volume) {
+    volume.textContent = stockData.volume;
+  }
+  
+  // Update market cap
+  if (marketCap) {
+    marketCap.textContent = stockData.marketCap;
+  }
+  
+  // Update recommendation
+  if (recommendation && predictionData) {
+    recommendation.textContent = predictionData.recommendation;
+    recommendation.className = `recommendation ${predictionData.recommendation.toLowerCase()}`;
+  }
 }
 
-// Handle MFA selection
-function selectMFAMethod(method) {
-    const options = document.querySelectorAll('.mfa-option');
-    options.forEach(option => option.classList.remove('selected'));
-    
-    const selectedOption = document.querySelector(`.mfa-option[data-method="${method}"]`);
-    if (selectedOption) {
-        selectedOption.classList.add('selected');
-        
-        // Update MFA input label
-        const label = document.querySelector('label[for="mfaCode"]');
-        if (method === 'app') {
-            label.textContent = 'Enter 6-digit code from Authenticator App';
-        } else if (method === 'sms') {
-            label.textContent = 'Enter 6-digit code sent to your phone';
-        } else if (method === 'email') {
-            label.textContent = 'Enter 6-digit code sent to your email';
-        }
-    }
+// Update prediction display
+function updatePredictionDisplay(predictionData) {
+  if (!predictionContainer || !predictionData) return;
+  
+  // Day 1 prediction
+  if (document.getElementById('day1Price')) {
+    document.getElementById('day1Price').textContent = `${predictionData.day1.price.toFixed(2)}`;
+    document.getElementById('day1Confidence').textContent = `${predictionData.day1.confidence}%`;
+    document.getElementById('day1ConfidenceBar').style.width = `${predictionData.day1.confidence}%`;
+  }
+  
+  // Day 2 prediction
+  if (document.getElementById('day2Price')) {
+    document.getElementById('day2Price').textContent = `${predictionData.day2.price.toFixed(2)}`;
+    document.getElementById('day2Confidence').textContent = `${predictionData.day2.confidence}%`;
+    document.getElementById('day2ConfidenceBar').style.width = `${predictionData.day2.confidence}%`;
+  }
+  
+  // Day 3 prediction
+  if (document.getElementById('day3Price')) {
+    document.getElementById('day3Price').textContent = `${predictionData.day3.price.toFixed(2)}`;
+    document.getElementById('day3Confidence').textContent = `${predictionData.day3.confidence}%`;
+    document.getElementById('day3ConfidenceBar').style.width = `${predictionData.day3.confidence}%`;
+  }
 }
 
-// Handle login form submission
-function handleLogin(event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const mfaCode = document.getElementById('mfaCode').value;
-    
-    if (!email || !password || !mfaCode) {
-        alert('Please fill in all fields');
-        return;
-    }
-    
-    // In a real app, you would call your API for authentication
-    // For this demo, just close the modal and proceed
-    document.getElementById('loginModal').style.display = 'none';
+// Show loader
+function showLoader() {
+  if (chartLoading) {
+    chartLoading.style.display = 'flex';
+  }
 }
 
-// Show stock selector modal
-function showStockSelector() {
-    // Populate the stock grid
-    const stockGrid = document.getElementById('stockGrid');
-    stockGrid.innerHTML = '';
+// Hide loader
+function hideLoader() {
+  if (chartLoading) {
+    chartLoading.style.display = 'none';
+  }
+}
+
+// ===================== STOCK GRID FUNCTIONS ======================
+// Generate stock grid items
+function generateStockGrid() {
+  if (!stockGrid) return;
+  
+  stockGrid.innerHTML = '';
+  
+  top50Symbols.forEach(symbol => {
+    const card = document.createElement('div');
+    card.className = 'stock-card';
+    card.dataset.symbol = symbol;
     
-    Object.keys(stockData).forEach(symbol => {
-        const stockCard = document.createElement('div');
-        stockCard.className = `stock-card ${symbol === currentStock ? 'selected' : ''}`;
-        stockCard.innerHTML = `
-            <div class="stock-name">${symbol}</div>
-            <div class="stock-details">${stockData[symbol].name}</div>
-        `;
-        stockCard.addEventListener('click', () => selectStock(symbol));
-        stockGrid.appendChild(stockCard);
+    card.innerHTML = `
+      <div class="stock-symbol">${symbol}</div>
+      <div class="stock-name">${companyNames[symbol] || symbol}</div>
+    `;
+    
+    card.addEventListener('click', () => {
+      selectStock(symbol);
+      stockSelectorModal.style.display = 'none';
     });
     
-    document.getElementById('stockSelectorModal').style.display = 'block';
+    stockGrid.appendChild(card);
+  });
 }
 
 // Select a stock
 function selectStock(symbol) {
-    currentStock = symbol;
-    document.getElementById('stockSelectorModal').style.display = 'none';
-    updateChart(currentStock, timeframeInDays);
+  currentStock = symbol;
+  loadStockData();
 }
 
-// Update watchlist items
-function updateWatchlist() {
-    const watchlistContainer = document.querySelector('.stock-list');
-    watchlistContainer.innerHTML = '';
+// ===================== CHAT FUNCTIONS ======================
+// Send chat message
+function sendChatMessage() {
+  if (!chatInput || !chatMessages) return;
+  
+  const message = chatInput.value.trim();
+  if (!message) return;
+  
+  // Add user message
+  addChatMessage(message, 'user-message');
+  
+  // Clear input
+  chatInput.value = '';
+  
+  // Show typing indicator
+  const typingIndicator = document.createElement('div');
+  typingIndicator.className = 'message bot-message typing-indicator';
+  typingIndicator.innerHTML = `
+    <div class="message-content">
+      <div class="typing-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  `;
+  chatMessages.appendChild(typingIndicator);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+  // Simulate bot response
+  setTimeout(() => {
+    // Remove typing indicator
+    typingIndicator.remove();
     
-    // Create a watchlist of 5 random stocks
-    const watchlistStocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'];
+    // Bot responses based on keywords
+    let response;
+    const lowerMsg = message.toLowerCase();
     
-    watchlistStocks.forEach(symbol => {
-        const stock = stockData[symbol];
-        if (!stock) return;
-        
-        const listItem = document.createElement('li');
-        listItem.className = 'stock-item';
-        listItem.innerHTML = `
-            <div class="stock-info">
-                <div class="stock-name">${symbol}</div>
-                <div class="stock-details">${stock.name}</div>
-            </div>
-            <div class="stock-price">
-                <div class="price-value">$${stock.currentPrice.toFixed(2)}</div>
-                <div class="price-change ${stock.change >= 0 ? 'price-up' : 'price-down'}">
-                    ${stock.change >= 0 ? '+' : ''}${stock.changePercent.toFixed(1)}%
-                </div>
-            </div>
-        `;
-        
-        listItem.addEventListener('click', () => {
-            currentStock = symbol;
-            updateChart(currentStock, timeframeInDays);
-        });
-        
-        watchlistContainer.appendChild(listItem);
-    });
-}
-
-// Initialize the application when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize chart with default stock
-    initializeChart();
-    updateChart(currentStock, timeframeInDays);
-    
-    // Update watchlist
-    updateWatchlist();
-    
-    // Set up timeframe selector
-    const timeframeOptions = document.querySelectorAll('.timeframe-option');
-    timeframeOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            timeframeOptions.forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
-            timeframeInDays = this.dataset.days === 'max' ? 'max' : parseInt(this.dataset.days);
-            updateChart(currentStock, timeframeInDays);
-        });
-    });
-    
-    // Set up stock selector
-    document.getElementById('stockSelector').addEventListener('click', showStockSelector);
-    document.getElementById('closeSelectorBtn').addEventListener('click', function() {
-        document.getElementById('stockSelectorModal').style.display = 'none';
-    });
-    
-    // Set up chat input
-    const chatInput = document.querySelector('.chat-input input');
-    const sendButton = document.querySelector('.chat-input button');
-    
-    function sendMessage() {
-        const message = chatInput.value.trim();
-        if (message) {
-            addMessage(message, true);
-            chatInput.value = '';
-            
-            // Process message and get response
-            setTimeout(() => {
-                const response = processMessage(message);
-                addMessage(response, false);
-            }, 500);
-        }
+    if (lowerMsg.includes('prediction') || lowerMsg.includes('forecast')) {
+      response = `Based on our AI analysis, ${currentStock} shows a potential change of ${(Math.random() * 6 - 2).toFixed(1)}% in the next trading day. This prediction has a confidence level of approximately ${75 + Math.floor(Math.random() * 20)}%.`;
+    } else if (lowerMsg.includes('buy') || lowerMsg.includes('sell')) {
+      const rec = Math.random() > 0.5 ? 'buy' : 'sell';
+      response = `Our AI model currently suggests a "${rec.toUpperCase()}" recommendation for ${currentStock} based on recent price movements and market sentiment analysis.`;
+    } else if (lowerMsg.includes('market') || lowerMsg.includes('trend')) {
+      response = `The overall market is showing ${Math.random() > 0.5 ? 'bullish' : 'bearish'} signals today. Major indices are ${Math.random() > 0.5 ? 'up' : 'down'} with technology and healthcare sectors leading the ${Math.random() > 0.5 ? 'gains' : 'losses'}.`;
+    } else if (lowerMsg.includes('risk')) {
+      response = `For ${currentStock}, our volatility analysis indicates a ${Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low'} risk profile. Always consider your risk tolerance before making investment decisions.`;
+    } else {
+      response = `Thank you for your message. Is there anything specific about ${currentStock} or another stock you'd like to know about? I can help with predictions, market analysis, or trading strategies.`;
     }
     
-    chatInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            sendMessage();
+    // Add bot response
+    addChatMessage(response, 'bot-message');
+    
+    // Show quiz randomly
+    if (Math.random() > 0.7) {
+      showQuiz();
+    }
+  }, 1000 + Math.random() * 1000);
+}
+
+// Add message to chat
+function addChatMessage(text, className) {
+  if (!chatMessages) return;
+  
+  const message = document.createElement('div');
+  message.className = `message ${className}`;
+  message.innerHTML = `<div class="message-content">${text}</div>`;
+  
+  chatMessages.appendChild(message);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Show quiz
+function showQuiz() {
+  if (!quizContainer) return;
+  
+  const quizzes = [
+    {
+      question: "Which of these factors has the strongest influence on stock price movements?",
+      options: ["Company Earnings", "Social Media Mentions", "CEO Twitter Activity", "Office Location"]
+    },
+    {
+      question: "What is a 'Bull Market'?",
+      options: ["Rising Stock Prices", "Falling Stock Prices", "Stable Stock Prices", "Market Dominated by Bullish Investors"]
+    },
+    {
+      question: "Which pattern indicates a potential price reversal?",
+      options: ["Head and Shoulders", "Triangle Formation", "Linear Regression", "Fibonacci Sequence"]
+    }
+  ];
+  
+  const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+  
+  document.getElementById('quizQuestion').textContent = randomQuiz.question;
+  
+  const optionsContainer = document.getElementById('quizOptions');
+  optionsContainer.innerHTML = '';
+  
+  randomQuiz.options.forEach((option, index) => {
+    const optionElement = document.createElement('div');
+    optionElement.className = 'quiz-option';
+    optionElement.textContent = option;
+    optionElement.dataset.index = index;
+    
+    optionElement.addEventListener('click', function() {
+      // Remove selected class from all options
+      document.querySelectorAll('.quiz-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked option
+      this.classList.add('selected');
+    });
+    
+    optionsContainer.appendChild(optionElement);
+  });
+  
+  quizContainer.style.display = 'block';
+  
+  // Add submit event listener
+  const submitButton = quizContainer.querySelector('.quiz-submit');
+  submitButton.onclick = function() {
+    const selectedOption = optionsContainer.querySelector('.selected');
+    if (selectedOption) {
+      // Always give correct answer feedback for demo
+      addChatMessage(`Correct! "${selectedOption.textContent}" is the right answer. +10 points added to your learning score.`, 'bot-message');
+      quizContainer.style.display = 'none';
+    }
+  };
+}
+
+// ===================== INITIALIZATION FUNCTIONS ======================
+// Load stock data
+async function loadStockData() {
+  console.log(`Loading data for ${currentStock} with timeframe ${currentTimeframe}`);
+  
+  // Fetch stock data
+  const stockData = await fetchStockData(currentStock, parseInt(currentTimeframe));
+  
+  // Fetch prediction
+  const predictionData = await fetchPrediction(currentStock);
+  
+  // Update UI
+  updateChart(currentStock, stockData, predictionData);
+  updateStockMetrics(currentStock, stockData, predictionData);
+  updatePredictionDisplay(predictionData);
+}
+
+// ===================== EVENT LISTENERS ======================
+// Initialize application
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Initializing application...');
+  
+  // Initialize chart
+  initializeChart();
+  
+  // Load stock data
+  loadStockData();
+  
+  // Generate stock grid
+  generateStockGrid();
+  
+  // Add event listeners for timeframe selection
+  timeframeOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      // Remove active class from all options
+      timeframeOptions.forEach(opt => opt.classList.remove('active'));
+      
+      // Add active class to clicked option
+      this.classList.add('active');
+      
+      // Update timeframe and reload data
+      currentTimeframe = this.dataset.days;
+      loadStockData();
+    });
+  });
+  
+  // Stock selector event
+  if (stockSelector) {
+    stockSelector.addEventListener('click', () => {
+      stockSelectorModal.style.display = 'block';
+    });
+  }
+  
+  // Close selector button event
+  if (closeSelectorBtn) {
+    closeSelectorBtn.addEventListener('click', () => {
+      stockSelectorModal.style.display = 'none';
+    });
+  }
+  
+  // Login form submission
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      loginModal.style.display = 'none';
+    });
+  }
+  
+  // MFA option selection
+  mfaOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      // Remove selected class from all options
+      mfaOptions.forEach(opt => opt.classList.remove('selected'));
+      
+      // Add selected class to clicked option
+      this.classList.add('selected');
+      
+      // Update MFA input label
+      const method = this.dataset.method;
+      const label = document.querySelector('label[for="mfaCode"]');
+      
+      if (label) {
+        if (method === 'app') {
+          label.textContent = 'Enter 6-digit code from Authenticator App';
+        } else if (method === 'sms') {
+          label.textContent = 'Enter 6-digit code sent to your phone';
+        } else if (method === 'email') {
+          label.textContent = 'Enter 6-digit code sent to your email';
         }
+      }
     });
-    
-    sendButton.addEventListener('click', sendMessage);
-    
-    // Set up quiz submit button
-    document.querySelector('.quiz-submit').addEventListener('click', submitQuizAnswer);
-    
-    // Set up MFA options
-    const mfaOptions = document.querySelectorAll('.mfa-option');
-    mfaOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            selectMFAMethod(this.dataset.method);
-        });
+  });
+  
+  // Chat send button
+  if (chatSendButton) {
+    chatSendButton.addEventListener('click', sendChatMessage);
+  }
+  
+  // Chat input enter key
+  if (chatInput) {
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendChatMessage();
+      }
     });
-    
-    // Set up login form
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
-    
-    // User icon click should show login
-    document.getElementById('userIcon').addEventListener('click', showLoginModal);
+  }
+  
+  // Close modals when clicking outside
+  window.addEventListener('click', (e) => {
+    if (e.target === stockSelectorModal) {
+      stockSelectorModal.style.display = 'none';
+    }
+  });
+  
+  console.log('Application initialized');
 });
