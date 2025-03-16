@@ -1,6 +1,6 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -45,14 +45,14 @@ model Watchlist {
 }
 
 model Portfolio {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
   
-  ticker     String
-  shares     Float
-  avgPrice   Float
-  currentPrice Float?
+  ticker         String
+  shares         Float
+  avgPrice       Float
+  currentPrice   Float?
   
-  purchaseDate DateTime @default(now())
+  purchaseDate   DateTime @default(now())
 }

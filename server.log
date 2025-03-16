@@ -1,0 +1,88 @@
+2025-03-16 15:38:52.765070: I external/local_xla/xla/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2025-03-16 15:38:52.768916: I external/local_xla/xla/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2025-03-16 15:38:52.778421: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:467] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1742139532.793412   18387 cuda_dnn.cc:8579] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1742139532.797997   18387 cuda_blas.cc:1407] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+W0000 00:00:1742139532.818096   18387 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1742139532.818147   18387 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1742139532.818156   18387 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1742139532.818169   18387 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+2025-03-16 15:38:52.823943: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-03-16 15:38:55.651710: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)
+2025-03-16 15:38:55,779 - INFO: Loaded model for MA
+2025-03-16 15:38:55,874 - INFO: Loaded model for ADBE
+2025-03-16 15:38:55,966 - INFO: Loaded model for NEE
+2025-03-16 15:38:56,064 - INFO: Loaded model for TSLA
+2025-03-16 15:38:56,157 - INFO: Loaded model for INTC
+2025-03-16 15:38:56,250 - INFO: Loaded model for GOOGL
+2025-03-16 15:38:56,346 - INFO: Loaded model for AMGN
+2025-03-16 15:38:56,440 - INFO: Loaded model for JPM
+2025-03-16 15:38:56,536 - INFO: Loaded model for KO
+2025-03-16 15:38:56,627 - INFO: Loaded model for AMZN
+2025-03-16 15:38:56,720 - INFO: Loaded model for AVGO
+2025-03-16 15:38:56,813 - INFO: Loaded model for PG
+2025-03-16 15:38:56,908 - INFO: Loaded model for PFE
+2025-03-16 15:38:57,002 - INFO: Loaded model for BAC
+2025-03-16 15:38:57,108 - INFO: Loaded model for WFC
+2025-03-16 15:38:57,385 - INFO: Loaded model for VZ
+2025-03-16 15:38:57,478 - INFO: Loaded model for MRK
+2025-03-16 15:38:57,571 - INFO: Loaded model for HD
+2025-03-16 15:38:57,682 - INFO: Loaded model for COST
+2025-03-16 15:38:57,776 - INFO: Loaded model for TMO
+2025-03-16 15:38:57,869 - INFO: Loaded model for DIS
+2025-03-16 15:38:57,961 - INFO: Loaded model for AAPL
+2025-03-16 15:38:58,059 - INFO: Loaded model for QCOM
+2025-03-16 15:38:58,152 - INFO: Loaded model for V
+2025-03-16 15:38:58,246 - INFO: Loaded model for ABBV
+2025-03-16 15:38:58,339 - INFO: Loaded model for INTU
+2025-03-16 15:38:58,435 - INFO: Loaded model for ACN
+2025-03-16 15:38:58,532 - INFO: Loaded model for LOW
+2025-03-16 15:38:58,641 - INFO: Loaded model for IBM
+2025-03-16 15:38:58,736 - INFO: Loaded model for META
+2025-03-16 15:38:58,828 - INFO: Loaded model for CSCO
+2025-03-16 15:38:58,919 - INFO: Loaded model for CRM
+2025-03-16 15:38:59,012 - INFO: Loaded model for ORCL
+2025-03-16 15:38:59,109 - INFO: Loaded model for NVDA
+2025-03-16 15:38:59,201 - INFO: Loaded model for MCD
+2025-03-16 15:38:59,294 - INFO: Loaded model for NFLX
+2025-03-16 15:38:59,387 - INFO: Loaded model for LLY
+2025-03-16 15:38:59,479 - INFO: Loaded model for DHR
+2025-03-16 15:38:59,574 - INFO: Loaded model for PEP
+2025-03-16 15:38:59,675 - INFO: Loaded model for CMCSA
+2025-03-16 15:38:59,781 - INFO: Loaded model for MSFT
+2025-03-16 15:38:59,913 - INFO: Loaded model for CVX
+2025-03-16 15:39:00,006 - INFO: Loaded model for TXN
+2025-03-16 15:39:00,114 - INFO: Loaded model for HON
+2025-03-16 15:39:00,207 - INFO: Loaded model for PM
+2025-03-16 15:39:00,320 - INFO: Loaded model for ABT
+2025-03-16 15:39:00,321 - INFO: ✅ Loaded 46 models.
+2025-03-16 15:39:00,341 - INFO: ✅ Backend Ready! Starting server...
+INFO:     Started server process [18387]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     10.240.1.166:0 - "GET / HTTP/1.1" 200 OK
+INFO:     10.240.1.166:0 - "GET /static/styles.css HTTP/1.1" 304 Not Modified
+INFO:     10.240.1.166:0 - "GET /static/main.js HTTP/1.1" 304 Not Modified
+2025-03-16 15:39:04,892 - INFO: Fetching data for AAPL
+2025-03-16 15:39:05,110 - ERROR: Prediction error for AAPL: Exception encountered when calling LSTMCell.call().
+
+[1mDimensions must be equal, but are 1 and 5 for '{{node sequential_1/lstm_1/lstm_cell_1/MatMul}} = MatMul[T=DT_FLOAT, grad_a=false, grad_b=false, transpose_a=false, transpose_b=false](sequential_1/lstm_1/strided_slice_1, sequential_1/lstm_1/lstm_cell_1/Cast/ReadVariableOp)' with input shapes: [1,1], [5,200].[0m
+
+Arguments received by LSTMCell.call():
+  • inputs=tf.Tensor(shape=(1, 1), dtype=float32)
+  • states=('tf.Tensor(shape=(1, 50), dtype=float32)', 'tf.Tensor(shape=(1, 50), dtype=float32)')
+  • training=False
+INFO:     10.240.1.166:0 - "POST /api/predict HTTP/1.1" 200 OK
+2025-03-16 15:39:05,335 - INFO: Fetching data for AAPL
+2025-03-16 15:39:05,404 - ERROR: Prediction error for AAPL: Exception encountered when calling LSTMCell.call().
+
+[1mDimensions must be equal, but are 1 and 5 for '{{node sequential_1/lstm_1/lstm_cell_1/MatMul}} = MatMul[T=DT_FLOAT, grad_a=false, grad_b=false, transpose_a=false, transpose_b=false](sequential_1/lstm_1/strided_slice_1, sequential_1/lstm_1/lstm_cell_1/Cast/ReadVariableOp)' with input shapes: [1,1], [5,200].[0m
+
+Arguments received by LSTMCell.call():
+  • inputs=tf.Tensor(shape=(1, 1), dtype=float32)
+  • states=('tf.Tensor(shape=(1, 50), dtype=float32)', 'tf.Tensor(shape=(1, 50), dtype=float32)')
+  • training=False
+INFO:     10.240.1.166:0 - "POST /api/predict HTTP/1.1" 200 OK

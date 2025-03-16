@@ -1,0 +1,3 @@
+2025-03-16 15:14:38,390 - INFO: Merged data shape: (1245, 42)
+2025-03-16 15:14:38,390 - INFO: Columns in merged data: ['Date', 'Close', 'High', 'Low', 'Open', 'Volume', 'Ticker', 'timestamp_x', 'Close.1', 'High.1', 'Low.1', 'Open.1', 'Volume.1', 'Close.2', 'High.2', 'Low.2', 'Open.2', 'Volume.2', 'Close.3', 'High.3', 'Low.3', 'Open.3', 'Volume.3', 'Close.4', 'High.4', 'Low.4', 'Open.4', 'Volume.4', 'RealGDP', 'UnemploymentRate', 'NonfarmPayrolls', 'Inflation', 'ConsumerSentiment', 'RetailSales', 'DurableGoods', 'FedFundsRate', 'date', 'timestamp_y', 'source', 'title', 'sentiment_score', 'sentiment_label']
+2025-03-16 15:14:38,391 - INFO: 🎉 Data merging complete!
